@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Button Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #282c34;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #stats {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 20px;
+            font-size: 24px;
+        }
+        #button {
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #61dafb;
+            border: none;
+            border-radius: 50%;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 80px;
+        }
+        #button:hover {
+            background-color: #21a1f1;
+        }
+    </style>
+</head>
+<body>
+    <div id="stats">
+        <div>Max: <span id="highscore">0</span></div>
+        <div>Total: <span id="totalClicks">0</span></div>
+        <div>Resets: <span id="resets">0</span></div>
+    </div>
+    
+    <button id="button">0</button>
+
+    <script>
+        let count = 0;
+        let loseChance = 0;  
+        
+        // Load stats from local storage
+        let highscore = localStorage.getItem("highscore") ? parseInt(localStorage.getItem("highscore")) : 0;
+        let totalClicks = localStorage.getItem("totalClicks") ? parseInt(localStorage.getItem("totalClicks")) : 0;
+        let resets = localStorage.getItem("resets") ? parseInt(localStorage.getItem("resets")) : 0;
+
+        const button = document.getElementById("button");
+        const highscoreDisplay = document.getElementById("highscore");
+        const totalClicksDisplay = document.getElementById("totalClicks");
+        const resetsDisplay = document.getElementById("resets");
+
+        // Display loaded stats
+        highscoreDisplay.textContent = highscore;
+        totalClicksDisplay.textContent = totalClicks;
+        resetsDisplay.textContent = resets;
+
+        button.addEventListener("click", () => {
+            totalClicks++;
+            totalClicksDisplay.textContent = totalClicks;
+            localStorage.setItem("totalClicks", totalClicks); // Save to storage
+
+            if (count > 0 && Math.random() * 100 < loseChance) { 
+                if (count > highscore) {
+                    highscore = count;
+                    localStorage.setItem("highscore", highscore); // Save new highscore
+                }
+                count = 0;
+                loseChance = 0;
+                resets++;
+                resetsDisplay.textContent = resets;
+                localStorage.setItem("resets", resets); // Save resets
+            } else {
+                count++;
+                if (count > 1) {  
+                    loseChance++;
+                }
+            }
+
+            button.textContent = count;
+            highscoreDisplay.textContent = highscore;
+        });
+    </script>
+</body>
+</html>
